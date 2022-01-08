@@ -30,18 +30,19 @@ function codenamize_particles(obj; adjectives=1, max_item_chars=Inf,
     objects, so existing mapped codenames will change substantially.
     """
     # Prepare codename word lists and calculate size of codename space
-    max_item_chars = Int(clamp(max_item_chars, 3, 15))
+    max_item_chars = Int(clamp(max_item_chars, 3, 20))
     valid_nouns = NOUNS[1:NOUN_LENGTHS[max_item_chars]]
-    valid_adjs = ADJECTIVES[1:ADJECTIVES_LENGTHS[max_item_chars]]
+    valid_adjs = ADJECTIVES[1:ADJECTIVE_LENGTHS[max_item_chars]]
     particles = vcat([valid_nouns], repeat([valid_adjs], adjectives))
     total_words = prod(map(length, particles))
-    obj_hash = hash_algo(obj) * 36413321723440003717
-    indices = accumulate(÷, map(length, particles);
-                         init=obj_hash % total_words)
-    reverse([p[i % length(p)] for (p, i) in zip(particles, indices)])
+    obj_hash = abs(hash_algo(obj) * 36413321723440003717)
+    index1 = obj_hash % total_words + 1
+    indices = vcat(index1,
+                   accumulate(÷, map(length, particles); init=index1))
+    reverse([p[i % length(p) + 1] for (p, i) in zip(particles, indices)])
 end
 
-function codenamize(obj; sep="-", case=lowercase, kwargs...):
+function codenamize(obj; sep="-", case=lowercase, kwargs...)
     """
     Returns a consistent codename for the given object, by joining random
     adjectives and words together.

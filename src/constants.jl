@@ -52,7 +52,4 @@ const NOUNS = sort([
     "yard","year","yellow","yesterday","you","young","youth","zone"
 ]; by=length)
 
-const ADJECTIVE_LENGTHS = indexin(1:20, map(length, ADJECTIVES))
-const NOUN_LENGTHS = indexin(1:20, map(length, NOUNS))
-
 
